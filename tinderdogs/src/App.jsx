@@ -45,13 +45,21 @@ function App() {
     });
   };
 
+  const clickRechazarPerro2 = (perro) => {
+    setAceptado(aceptado?.filter((miPerro) => miPerro.nombre !== perro.nombre));
+    setRechazado((aceptado) => [...aceptado, perro]);
+  };
+
+  const clickAceptarPerro2 = (perro) => {
+    setRechazado(rechazado?.filter((miPerro) => miPerro.nombre !== perro.nombre));
+    setAceptado((rechazado) => [...rechazado, perro]);
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={4}>
-        <Typography sx={{ color: "red" }} variant="h4">
-          Perros Rechazados
-        </Typography>
-        {rechazado?.map((perro) => {
+        <Typography sx={{color:"green"}}variant="h4">Perros Aceptados</Typography>
+        {aceptado?.map((perro) => {
           return (
             <Card key={perro.nombre}>
               <CardMedia
@@ -66,16 +74,14 @@ function App() {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small" color="success">
-                  Aceptar
+                <Button startIcon={<ThumbDownIcon />} size="small" color="error" onClick={()=> clickRechazarPerro2(perro)}>
+                  Rechazar
                 </Button>
               </CardActions>
             </Card>
           );
         })}
       </Grid>
-
-      
 
       <Grid item xs={4}>
         <Typography
@@ -138,7 +144,7 @@ function App() {
                 Aceptar
               </Button>
               <Button
-                startIcon={<ThumbDownIcon  />}
+                startIcon={<ThumbDownIcon />}
                 disabled={cargando}
                 size="small"
                 color="error"
@@ -150,12 +156,12 @@ function App() {
           </Card>
         )}
       </Grid>
+
       <Grid item xs={4}>
-
-
-        
-        <Typography variant="h4">Perros Aceptados</Typography>
-        {aceptado?.map((perro) => {
+        <Typography sx={{ color: "red" }} variant="h4">
+          Perros Rechazados
+        </Typography>
+        {rechazado?.map((perro) => {
           return (
             <Card key={perro.nombre}>
               <CardMedia
@@ -170,8 +176,8 @@ function App() {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small" color="error">
-                  Rechazar
+                <Button startIcon={<ThumbUpIcon />} size="small" color="success" onClick={()=> clickAceptarPerro2(perro)}>
+                  Aceptar
                 </Button>
               </CardActions>
             </Card>
