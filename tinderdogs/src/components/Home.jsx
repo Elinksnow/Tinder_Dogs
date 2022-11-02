@@ -14,19 +14,10 @@ const Home = () => {
   const [listadoSelected, setListadoSelected] = useState([]);
 
 
-  function comparar(a,b) {
-    if (a.name < b.name){
-      return -1
-    } else {
-      return 1
-    }
-  }
 
   const cargarPerros = () => {
-    axios.get("https://pokeapi.co/api/v2/pokemon?limit=25").then(
-      (response) => {
-        setListado(response.data.results.sort((a,b) => (comparar(a, b))));
-      },
+    axios.get("https://dog.ceo/dog-api/").then(
+      
       (error) => {
         console.log(error);
       }
@@ -93,7 +84,6 @@ const Home = () => {
     const listadoNuevo = [...listado,itemExterno]
     console.log(listadoNuevo);
 
-    const listadoOrdenado = listadoNuevo.sort((a,b)=>comparar(a,b))
     setListado(listadoOrdenado)
 
 
