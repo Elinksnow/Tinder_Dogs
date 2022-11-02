@@ -66,10 +66,10 @@ function App() {
                 component="img"
                 height="300"
                 image={perro.img}
-                alt="green iguana"
+                alt="Perroimg"
               />
               <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography align="center" gutterBottom variant="h5" component="div">
                   {perro.nombre}
                 </Typography>
               </CardContent>
@@ -88,7 +88,8 @@ function App() {
           sx={{
             color: "blue",
           }}
-          variant="h3"
+          align="center"
+          variant="h4"
         >
           Tinder de Perros
         </Typography>
@@ -98,10 +99,10 @@ function App() {
               component="img"
               height="300"
               image={perro.img}
-              alt="green iguana"
+              alt="Perroimg"
             />
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography align="center" gutterBottom variant="h5" component="div">
                 Cargando...
               </Typography>
             </CardContent>
@@ -126,10 +127,10 @@ function App() {
               component="img"
               height="300"
               image={perro.img}
-              alt="green iguana"
+              alt="Perroimg"
             />
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography align="center" gutterBottom variant="h5" component="div">
                 {perro.nombre}
               </Typography>
             </CardContent>
@@ -168,10 +169,10 @@ function App() {
                 component="img"
                 height="300"
                 image={perro.img}
-                alt="green iguana"
+                alt="Perroimg"
               />
               <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography align="center" gutterBottom variant="h5" component="div">
                   {perro.nombre}
                 </Typography>
               </CardContent>
