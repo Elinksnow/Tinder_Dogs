@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import { Grid, Button } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import { height, width } from "@mui/system";
 
 function App() {
   const [perro, setPerro] = useState({ nombre: "", img: "" });
@@ -56,9 +57,13 @@ function App() {
   };
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2}  style={{ 
+      backgroundImage: `url("https://static.vecteezy.com/system/resources/previews/007/168/222/non_2x/pet-footprints-horizontal-seamless-pattern-animal-print-black-prints-of-tracks-of-a-cat-dog-on-a-white-background-pet-paw-print-silhouettes-nice-texture-vector.jpg")`,
+      position: "relative",
+      height: "100%"
+    }}>
       <Grid item xs={4}>
-        <Typography sx={{color:"green"}}variant="h4">Perros Aceptados</Typography>
+        <Typography  align="center" sx={{color:"green", backgroundColor: "#F2F2F2"}} variant="h4">Perros Aceptados</Typography>
         {aceptado?.map((perro) => {
           return (
             <Card key={perro.nombre}>
@@ -87,11 +92,12 @@ function App() {
         <Typography
           sx={{
             color: "blue",
+            backgroundColor: "#F2F2F2",
           }}
           align="center"
           variant="h4"
         >
-          Tinder de Perros
+          Tinder Canino
         </Typography>
         {cargando ? (
           <Card>
@@ -159,7 +165,7 @@ function App() {
       </Grid>
 
       <Grid item xs={4}>
-        <Typography sx={{ color: "red" }} variant="h4">
+        <Typography align="center" sx={{ color: "red", backgroundColor: "#F2F2F2"}} variant="h4">
           Perros Rechazados
         </Typography>
         {rechazado?.map((perro) => {
