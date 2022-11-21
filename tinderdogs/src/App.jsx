@@ -4,7 +4,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Grid, Button, LinearProgress, Collapse  } from "@mui/material";
+import { Grid, Button, LinearProgress, Collapse, IconButton, Tooltip} from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { height, width } from "@mui/system";
@@ -127,26 +127,29 @@ function App() {
                 {perro.nombre}
               </Typography>
             </CardContent>
-            <CardActions>
-              <Button
-                startIcon={<ThumbUpIcon />}
+            <CardActions> 
+
+              <Tooltip title="Aceptar">
+                <IconButton
                 disabled={cargando}
                 size="small"
                 color="success"
                 onClick={clickAceptarPerro}
-              >
-                Aceptar
-              </Button>
-              <Button
-                startIcon={<ThumbDownIcon />}
+                >
+                  <ThumbUpIcon />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Rechazar">
+                <IconButton
                 disabled={cargando}
                 size="small"
                 color="error"
                 onClick={clickRechazarPerro}
-              >
-                Rechazar
-              </Button>
-
+                >
+                  <ThumbDownIcon />
+                </IconButton>
+              </Tooltip>
             </CardActions>
               <CardContent>
                 <Typography paragraph>
@@ -176,17 +179,28 @@ function App() {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button startIcon={<ThumbDownIcon />} size="small" color="error" onClick={()=> clickRechazarPerro2(perro)}>
-                  Rechazar
-                </Button>
+                  <Tooltip title="Rechazar">
+                    <IconButton
+                    disabled={cargando}
+                    size="small"
+                    color="error"
+                    onClick={()=> clickRechazarPerro2(perro)}
+                    >
+                      <ThumbDownIcon />
+                    </IconButton>
+                  </Tooltip>
 
-                <Button
-                startIcon={!perro.expandir ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                size="small"
-                align="rigth"
-                onClick={()=>ExpandirPerro(perro)}
-                >
-              </Button>
+                  <Tooltip title="Ver más">
+                    <IconButton
+                    disabled={cargando}
+                    size="small"
+                    align="rigth"
+                    onClick={()=>ExpandirPerro(perro)}
+                    >
+                      {!perro.expandir ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                    </IconButton>
+                  </Tooltip>
+
               </CardActions>
               <Collapse in={perro.expandir} timeout="auto" unmountOnExit>
                 <CardContent>
@@ -221,16 +235,29 @@ function App() {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button startIcon={<ThumbUpIcon />} size="small" color="success" onClick={()=> clickAceptarPerro2(perro)}>
-                  Aceptar
-                </Button>
-                <Button
-              startIcon={!perro.expandir ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-              size="small"
-              align="rigth"
-              onClick={ ()=> ExpandirPerro2(perro) }
-              >
-              </Button>
+                <Tooltip title="Aceptar">
+                  <IconButton
+                    disabled={cargando}
+                    size="small"
+                    color="success"
+                    onClick={()=> clickAceptarPerro2(perro)}
+                    >
+                      <ThumbUpIcon />
+                    </IconButton>
+                </Tooltip>
+                
+                <Tooltip title="Ver más">
+                  <IconButton
+                  disabled={cargando}
+                  size="small"
+                  align="rigth"
+                  onClick={ ()=> ExpandirPerro2(perro) }
+                  >
+                    {!perro.expandir ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                  </IconButton>
+                </Tooltip>
+                
+
               </CardActions>
               <Collapse in={perro.expandir} timeout="auto" unmountOnExit>
                 <CardContent>
@@ -246,6 +273,8 @@ function App() {
     </Grid>
   );
 }
+
+{/* ---------------------------------------------------------------------------------------------------------- */}
 
 function StringAleatorio(length) {
   var result = "";
@@ -270,7 +299,7 @@ function LoremAleatorio() {
   ];
 
   var sentenceslength = sentences.length;
-  for (var i = 0; i < 7; i++) {
+  for (var i = 0; i < 6; i++) {
     result += sentences[Math.floor(Math.random() * 5)]
   }
 
