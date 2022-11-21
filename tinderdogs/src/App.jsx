@@ -9,28 +9,47 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { height, width } from "@mui/system";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 
 function App() {
-  const [perro, setPerro] = useState({ nombre: "", img: "" });
+  const [perro, setPerro] = useState({ nombre: "", img: "" ,descripcion: "", expandir: false});
   const [aceptado, setAceptado] = useState([]);
   const [rechazado, setRechazado] = useState([]);
   const [cargando, setCargando] = useState(true);
-  const [expanded, setExpanded] = useState(false);
+
 
   const obtenerPerro = async () => {
     const response = await fetch("https://dog.ceo/api/breeds/image/random");
     return response.json();
   };
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
+  const ExpandirPerro = (perro) => {
+    setAceptado(aceptado?.map((miPerro) => {
+      if( miPerro.nombre === perro.nombre ){
+        return{
+          ...miPerro , expandir: !perro.expandir 
+        }
+      }
+      return miPerro
+    }));
+  };
+
+  const ExpandirPerro2 = (perro) => {
+    setRechazado(rechazado?.map( (miPerro) => {
+      if( miPerro.nombre === perro.nombre ){
+        return{
+          ...miPerro , expandir: !perro.expandir,
+        }
+      }
+      return miPerro
+    }));
   };
 
   useEffect(() => {
     setCargando(true);
     obtenerPerro().then((data) => {
-      setPerro({ nombre: StringAleatorio(6), img: data.message });
+      setPerro({ nombre: StringAleatorio(6), img: data.message, descripcion: LoremAleatorio(), expandir: false });
       setCargando(false);
     });
   }, []);
@@ -39,7 +58,7 @@ function App() {
     setCargando(true);
     setAceptado((aceptado) => [...aceptado, perro]);
     obtenerPerro().then((data) => {
-      setPerro({ nombre: StringAleatorio(6), img: data.message });
+      setPerro({ nombre: StringAleatorio(6), img: data.message, descripcion: LoremAleatorio(), expandir: false });
       setCargando(false);
     });
   };
@@ -48,7 +67,7 @@ function App() {
     setCargando(true);
     setRechazado((rechazado) => [...rechazado, perro]);
     obtenerPerro().then((data) => {
-      setPerro({ nombre: StringAleatorio(6), img: data.message });
+      setPerro({ nombre: StringAleatorio(6), img: data.message, descripcion: LoremAleatorio(), expandir: false });
       setCargando(false);
     });
   };
@@ -70,7 +89,7 @@ function App() {
       height: "100%"
     }}>
       
-
+{/* --------------------------------------------------------- Columna Candidatos ----------------------------------------------- */}
       <Grid item xs={12} md={4}>
         <Typography
           sx={{
@@ -91,25 +110,9 @@ function App() {
               alt="Perroimg"
             />
             <CardContent>
-              {/* <Typography align="center" gutterBottom variant="h5" component="div">
-                Cargando...
-              </Typography> */}
               <LinearProgress color="success" />
             </CardContent>
-            <CardActions>
-              <Button
-                disabled={cargando}
-                size="small"
-                color="success"
-                onClick={clickAceptarPerro}
-              ></Button>
-              <Button
-                disabled={cargando}
-                size="small"
-                color="error"
-                onClick={clickRechazarPerro}
-              ></Button>
-            </CardActions>
+
           </Card>
         ) : (
           <Card>
@@ -144,33 +147,17 @@ function App() {
                 Rechazar
               </Button>
 
-              <Button
-              startIcon={<ExpandMoreIcon />}
-              size="small"
-              align="rigth"
-              onClick={handleExpandClick}
-              >
-              </Button>
-
             </CardActions>
-              <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <CardContent>
-
-                  <Typography paragraph>
-                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-
-                  </Typography>
-                  <Typography paragraph>
-                  Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, 
-                  ultricies nec, pellentesque eu, pretium quis, sem. 
-                  Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate
-                  </Typography>
-
-                </CardContent>
-              </Collapse>
+              <CardContent>
+                <Typography paragraph>
+                {perro.descripcion}
+                </Typography>
+              </CardContent>
           </Card>
         )}
       </Grid>
+
+{/* --------------------------------------------------------- Columna Aceptados ----------------------------------------------- */}
 
       <Grid item xs={6} md={4}>
         <Typography  align="center" sx={{color:"green", backgroundColor: "#F2F2F2"}} variant="h4">Perros Aceptados</Typography>
@@ -192,11 +179,28 @@ function App() {
                 <Button startIcon={<ThumbDownIcon />} size="small" color="error" onClick={()=> clickRechazarPerro2(perro)}>
                   Rechazar
                 </Button>
+
+                <Button
+                startIcon={!perro.expandir ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                size="small"
+                align="rigth"
+                onClick={()=>ExpandirPerro(perro)}
+                >
+              </Button>
               </CardActions>
+              <Collapse in={perro.expandir} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Typography paragraph>
+                    {perro.descripcion}
+                  </Typography>
+                </CardContent>
+              </Collapse>
             </Card>
           );
         })}
       </Grid>
+
+{/* --------------------------------------------------------- Columna Rechazados ----------------------------------------------- */}
 
       <Grid item xs={6} md={4}>
         <Typography align="center" sx={{ color: "red", backgroundColor: "#F2F2F2"}} variant="h4">
@@ -220,7 +224,21 @@ function App() {
                 <Button startIcon={<ThumbUpIcon />} size="small" color="success" onClick={()=> clickAceptarPerro2(perro)}>
                   Aceptar
                 </Button>
+                <Button
+              startIcon={!perro.expandir ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              size="small"
+              align="rigth"
+              onClick={ ()=> ExpandirPerro2(perro) }
+              >
+              </Button>
               </CardActions>
+              <Collapse in={perro.expandir} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Typography paragraph>
+                    {perro.descripcion}
+                  </Typography>
+                </CardContent>
+              </Collapse>
             </Card>
           );
         })}
@@ -238,8 +256,25 @@ function StringAleatorio(length) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+}
 
-  console.log(StringAleatorio(5));
+function LoremAleatorio() {
+  var result = "";
+
+  var sentences = [
+    "Lorem ipsum dolor sit amet ",
+    "consectetuer adipiscing elit. ",
+    "Aenean commodo ligula eget dolorAenean massa ",
+    "Cum sociis natoque penatibus et magnis ",
+    "nascetur ridiculus mus. ",
+  ];
+
+  var sentenceslength = sentences.length;
+  for (var i = 0; i < 7; i++) {
+    result += sentences[Math.floor(Math.random() * 5)]
+  }
+
+  return result;
 }
 
 export default App;
