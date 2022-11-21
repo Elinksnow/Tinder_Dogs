@@ -108,17 +108,9 @@ function App() {
     setAceptado((rechazado) => [perro, ...rechazado ]);
   };
 
-<<<<<<< HEAD
-{/* --------------------------------------------------------- return ---------------------------------------------------------- */}
 
-  return (
 
-       
-=======
-
-  return (
-
->>>>>>> 985711817a2445f14c3d7f4c46330c6545985952
+return(
     <Grid container spacing={2}  style={{ 
       backgroundImage: `url("https://static.vecteezy.com/system/resources/previews/007/168/222/non_2x/pet-footprints-horizontal-seamless-pattern-animal-print-black-prints-of-tracks-of-a-cat-dog-on-a-white-background-pet-paw-print-silhouettes-nice-texture-vector.jpg")`,
       position: "relative",
