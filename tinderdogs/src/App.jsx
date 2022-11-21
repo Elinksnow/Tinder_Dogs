@@ -7,22 +7,37 @@ import Typography from "@mui/material/Typography";
 import { Grid, Button, LinearProgress, Collapse, IconButton, Tooltip} from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import { height, width } from "@mui/system";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-
+import { LoremIpsum } from "lorem-ipsum";
+import {
+  useQuery
+} from 'react-query'
+import axios from 'axios';
 
 function App() {
-  const [perro, setPerro] = useState({ nombre: "", img: "" ,descripcion: "", expandir: false});
+  const [perro, setPerro] = useState({ nombre: "", img: "" , descripcion: "", expandir: false});
   const [aceptado, setAceptado] = useState([]);
   const [rechazado, setRechazado] = useState([]);
   const [cargando, setCargando] = useState(true);
 
-
   const obtenerPerro = async () => {
-    const response = await fetch("https://dog.ceo/api/breeds/image/random");
-    return response.json();
+    const response = await axios.get("https://dog.ceo/api/breeds/image/random");
+    return response;
   };
+
+  const { data:dataPerro , status , isLoading, refetch} = useQuery('obtenerPerro',obtenerPerro,{refetchOnWindowFocus: false});
+
+  const lorem = new LoremIpsum({
+    sentencesPerParagraph: {
+      max: 8,
+      min: 4
+    },
+    wordsPerSentence: {
+      max: 16,
+      min: 4
+    }
+  });
 
   const ExpandirPerro = (perro) => {
     setAceptado(aceptado?.map((miPerro) => {
@@ -48,28 +63,37 @@ function App() {
 
   useEffect(() => {
     setCargando(true);
-    obtenerPerro().then((data) => {
-      setPerro({ nombre: StringAleatorio(6), img: data.message, descripcion: LoremAleatorio(), expandir: false });
-      setCargando(false);
-    });
-  }, []);
+
+    if(dataPerro){
+    setPerro({ nombre: StringAleatorio(6), img: dataPerro.data.message, descripcion: lorem.generateSentences(4), expandir: false });
+    setCargando(false);
+    console.log(dataPerro.data.message)
+    }
+
+    
+  }, [dataPerro]);
 
   const clickAceptarPerro = () => {
     setCargando(true);
     setAceptado((aceptado) => [perro, ...aceptado ]);
-    obtenerPerro().then((data) => {
-      setPerro({ nombre: StringAleatorio(6), img: data.message, descripcion: LoremAleatorio(), expandir: false });
-      setCargando(false);
-    });
+    if(dataPerro){     
+      refetch().then( () => {     
+        setPerro({ nombre: StringAleatorio(6), img: dataPerro.data.message, descripcion: lorem.generateSentences(4), expandir: false });
+        setCargando(false);
+      })  
+      }
   };
 
   const clickRechazarPerro = () => {
     setCargando(true);
     setRechazado((rechazado) => [perro, ...rechazado]);
-    obtenerPerro().then((data) => {
-      setPerro({ nombre: StringAleatorio(6), img: data.message, descripcion: LoremAleatorio(), expandir: false });
-      setCargando(false);
-    });
+    
+    if(dataPerro){
+      refetch().then( () => {  
+        setPerro({ nombre: StringAleatorio(6), img: dataPerro.data.message, descripcion: lorem.generateSentences(4), expandir: false });
+        setCargando(false);
+      })     
+      }
   };
 
   const clickRechazarPerro2 = (perro) => {
@@ -82,7 +106,11 @@ function App() {
     setAceptado((rechazado) => [perro, ...rechazado ]);
   };
 
+{/* --------------------------------------------------------- return ---------------------------------------------------------- */}
+
   return (
+
+       
     <Grid container spacing={2}  style={{ 
       backgroundImage: `url("https://static.vecteezy.com/system/resources/previews/007/168/222/non_2x/pet-footprints-horizontal-seamless-pattern-animal-print-black-prints-of-tracks-of-a-cat-dog-on-a-white-background-pet-paw-print-silhouettes-nice-texture-vector.jpg")`,
       position: "relative",
@@ -103,12 +131,12 @@ function App() {
         </Typography>
         {cargando ? (
           <Card>
-            <CardMedia
+            {/* <CardMedia
               component="img"
               height="300"
               image={perro.img}
               alt="Perroimg"
-            />
+            /> */}
             <CardContent>
               <LinearProgress color="success" />
             </CardContent>
@@ -181,7 +209,7 @@ function App() {
               <CardActions>
                   <Tooltip title="Rechazar">
                     <IconButton
-                    disabled={cargando}
+                    // disabled={cargando}
                     size="small"
                     color="error"
                     onClick={()=> clickRechazarPerro2(perro)}
@@ -192,7 +220,7 @@ function App() {
 
                   <Tooltip title="Ver más">
                     <IconButton
-                    disabled={cargando}
+                    // disabled={cargando}
                     size="small"
                     align="rigth"
                     onClick={()=>ExpandirPerro(perro)}
@@ -237,7 +265,7 @@ function App() {
               <CardActions>
                 <Tooltip title="Aceptar">
                   <IconButton
-                    disabled={cargando}
+                    // disabled={cargando}
                     size="small"
                     color="success"
                     onClick={()=> clickAceptarPerro2(perro)}
@@ -248,7 +276,7 @@ function App() {
                 
                 <Tooltip title="Ver más">
                   <IconButton
-                  disabled={cargando}
+                  // disabled={cargando}
                   size="small"
                   align="rigth"
                   onClick={ ()=> ExpandirPerro2(perro) }
@@ -271,6 +299,7 @@ function App() {
         })}
       </Grid>
     </Grid>
+
   );
 }
 
@@ -287,6 +316,7 @@ function StringAleatorio(length) {
   return result;
 }
 
+
 function LoremAleatorio() {
   var result = "";
 
@@ -298,7 +328,6 @@ function LoremAleatorio() {
     "nascetur ridiculus mus. ",
   ];
 
-  var sentenceslength = sentences.length;
   for (var i = 0; i < 6; i++) {
     result += sentences[Math.floor(Math.random() * 5)]
   }
