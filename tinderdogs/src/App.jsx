@@ -56,7 +56,7 @@ function App() {
 
   const clickAceptarPerro = () => {
     setCargando(true);
-    setAceptado((aceptado) => [...aceptado, perro]);
+    setAceptado((aceptado) => [perro, ...aceptado ]);
     obtenerPerro().then((data) => {
       setPerro({ nombre: StringAleatorio(6), img: data.message, descripcion: LoremAleatorio(), expandir: false });
       setCargando(false);
@@ -65,7 +65,7 @@ function App() {
 
   const clickRechazarPerro = () => {
     setCargando(true);
-    setRechazado((rechazado) => [...rechazado, perro]);
+    setRechazado((rechazado) => [perro, ...rechazado]);
     obtenerPerro().then((data) => {
       setPerro({ nombre: StringAleatorio(6), img: data.message, descripcion: LoremAleatorio(), expandir: false });
       setCargando(false);
@@ -74,12 +74,12 @@ function App() {
 
   const clickRechazarPerro2 = (perro) => {
     setAceptado(aceptado?.filter((miPerro) => miPerro.nombre !== perro.nombre));
-    setRechazado((aceptado) => [...aceptado, perro]);
+    setRechazado((aceptado) => [ perro, ...aceptado]);
   };
 
   const clickAceptarPerro2 = (perro) => {
     setRechazado(rechazado?.filter((miPerro) => miPerro.nombre !== perro.nombre));
-    setAceptado((rechazado) => [...rechazado, perro]);
+    setAceptado((rechazado) => [perro, ...rechazado ]);
   };
 
   return (
@@ -162,7 +162,7 @@ function App() {
 
 {/* --------------------------------------------------------- Columna Aceptados ----------------------------------------------- */}
 
-      <Grid item xs={6} md={4}>
+      <Grid item xs={6} md={4} sx={{ overflowY: "scroll", maxHeight: "950px"}}>
         <Typography  align="center" sx={{color:"green", backgroundColor: "#F2F2F2"}} variant="h4">Perros Aceptados</Typography>
         {aceptado?.map((perro) => {
           return (
@@ -216,7 +216,7 @@ function App() {
 
 {/* --------------------------------------------------------- Columna Rechazados ----------------------------------------------- */}
 
-      <Grid item xs={6} md={4}>
+      <Grid item xs={6} md={4} sx={{ overflowY: "scroll", maxHeight: "950px"}}>
         <Typography align="center" sx={{ color: "red", backgroundColor: "#F2F2F2"}} variant="h4">
           Perros Rechazados
         </Typography>
