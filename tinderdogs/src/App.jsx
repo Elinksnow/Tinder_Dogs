@@ -4,20 +4,27 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Grid, Button } from "@mui/material";
+import { Grid, Button, LinearProgress, Collapse  } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { height, width } from "@mui/system";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 
 function App() {
   const [perro, setPerro] = useState({ nombre: "", img: "" });
   const [aceptado, setAceptado] = useState([]);
   const [rechazado, setRechazado] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
   const obtenerPerro = async () => {
     const response = await fetch("https://dog.ceo/api/breeds/image/random");
     return response.json();
+  };
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
   };
 
   useEffect(() => {
@@ -62,33 +69,9 @@ function App() {
       position: "relative",
       height: "100%"
     }}>
-      <Grid item xs={4}>
-        <Typography  align="center" sx={{color:"green", backgroundColor: "#F2F2F2"}} variant="h4">Perros Aceptados</Typography>
-        {aceptado?.map((perro) => {
-          return (
-            <Card key={perro.nombre}>
-              <CardMedia
-                component="img"
-                height="300"
-                image={perro.img}
-                alt="Perroimg"
-              />
-              <CardContent>
-                <Typography align="center" gutterBottom variant="h5" component="div">
-                  {perro.nombre}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button startIcon={<ThumbDownIcon />} size="small" color="error" onClick={()=> clickRechazarPerro2(perro)}>
-                  Rechazar
-                </Button>
-              </CardActions>
-            </Card>
-          );
-        })}
-      </Grid>
+      
 
-      <Grid item xs={4}>
+      <Grid item xs={12} md={4}>
         <Typography
           sx={{
             color: "blue",
@@ -108,9 +91,10 @@ function App() {
               alt="Perroimg"
             />
             <CardContent>
-              <Typography align="center" gutterBottom variant="h5" component="div">
+              {/* <Typography align="center" gutterBottom variant="h5" component="div">
                 Cargando...
-              </Typography>
+              </Typography> */}
+              <LinearProgress color="success" />
             </CardContent>
             <CardActions>
               <Button
@@ -159,12 +143,62 @@ function App() {
               >
                 Rechazar
               </Button>
+
+              <Button
+              startIcon={<ExpandMoreIcon />}
+              size="small"
+              align="rigth"
+              onClick={handleExpandClick}
+              >
+              </Button>
+
             </CardActions>
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+
+                  <Typography paragraph>
+                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+
+                  </Typography>
+                  <Typography paragraph>
+                  Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, 
+                  ultricies nec, pellentesque eu, pretium quis, sem. 
+                  Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate
+                  </Typography>
+
+                </CardContent>
+              </Collapse>
           </Card>
         )}
       </Grid>
 
-      <Grid item xs={4}>
+      <Grid item xs={6} md={4}>
+        <Typography  align="center" sx={{color:"green", backgroundColor: "#F2F2F2"}} variant="h4">Perros Aceptados</Typography>
+        {aceptado?.map((perro) => {
+          return (
+            <Card key={perro.nombre}>
+              <CardMedia
+                component="img"
+                height="300"
+                image={perro.img}
+                alt="Perroimg"
+              />
+              <CardContent>
+                <Typography align="center" gutterBottom variant="h5" component="div">
+                  {perro.nombre}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button startIcon={<ThumbDownIcon />} size="small" color="error" onClick={()=> clickRechazarPerro2(perro)}>
+                  Rechazar
+                </Button>
+              </CardActions>
+            </Card>
+          );
+        })}
+      </Grid>
+
+      <Grid item xs={6} md={4}>
         <Typography align="center" sx={{ color: "red", backgroundColor: "#F2F2F2"}} variant="h4">
           Perros Rechazados
         </Typography>
