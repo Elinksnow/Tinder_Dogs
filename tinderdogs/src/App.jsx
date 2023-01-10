@@ -24,11 +24,13 @@ function App() {
   const [cargando, setCargando] = useState(true);
 
   const obtenerPerro = async () => {
-    const response = await axios.get("https://dog.ceo/api/breeds/image/random");
+    const response = await axios.get("http://127.0.0.1:8000/api/perros/random");
     return response;
   };
 
   const { data:dataPerro , status , isLoading, refetch} = useQuery('obtenerPerro',obtenerPerro,{refetchOnWindowFocus: false});
+
+  
 
   const lorem = new LoremIpsum({
     sentencesPerParagraph: {
@@ -66,10 +68,14 @@ function App() {
   useEffect(() => {
     setCargando(true);
 
+    
+
     if(dataPerro){
-    setPerro({ nombre: StringAleatorio(6), img: dataPerro.data.message, descripcion: lorem.generateSentences(4), expandir: false });
+
+      
+    setPerro({ nombre: dataPerro.data.nombre, img: dataPerro.data.url_foto, descripcion: dataPerro.data.descripcion, expandir: false });
     setCargando(false);
-    console.log(dataPerro.data.message)
+    
     }
 
     
