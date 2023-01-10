@@ -18,10 +18,11 @@ import axios from 'axios';
 
 
 function App() {
-  const [perro, setPerro] = useState({ nombre: "", img: "" , descripcion: "", expandir: false});
+  const [perro, setPerro] = useState({ id: "", nombre: "", img: "" , descripcion: "", expandir: false});
   const [aceptado, setAceptado] = useState([]);
   const [rechazado, setRechazado] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [interacciones, setInteracciones] = useState([]);
 
   const obtenerPerro = async () => {
     const response = await axios.get("http://127.0.0.1:8000/api/perros/random");
@@ -30,7 +31,16 @@ function App() {
 
   const { data:dataPerro , status , isLoading, refetch} = useQuery('obtenerPerro',obtenerPerro,{refetchOnWindowFocus: false});
 
-  
+  const obtenerInteracciones = async () => {
+    try {
+    const response = await axios.get("http://127.0.0.1:8000/api/interacciones");
+    setInteracciones(response.data)
+    return response;
+    } catch (error){
+      console.log("No se cargaron interacciones")
+    }
+
+  };
 
   const lorem = new LoremIpsum({
     sentencesPerParagraph: {
@@ -66,27 +76,67 @@ function App() {
   };
 
   useEffect(() => {
+
+    obtenerInteracciones();
+
     setCargando(true);
 
-    
-
     if(dataPerro){
-
-      
-    setPerro({ nombre: dataPerro.data.nombre, img: dataPerro.data.url_foto, descripcion: dataPerro.data.descripcion, expandir: false });
+    setPerro({ id: dataPerro.data.id, nombre: dataPerro.data.nombre, img: dataPerro.data.url_foto, descripcion: dataPerro.data.descripcion, expandir: false });
     setCargando(false);
     
     }
 
+   
+    cargarInteracciones();
+    console.log('i fire once');
     
   }, [dataPerro]);
 
+  const cargarInteracciones = async () => {
+    
+    if(interacciones){
+
+      interacciones.map(element => {
+        const response = axios.get(`http://127.0.0.1:8000/api/perros/${element.perro_candidato_id}`)
+    
+        //console.log("entre en data")
+        console.log(response)
+        if(response.preferencia == 'aceptado'){
+          console.log("entre al if .data")
+          setAceptado((aceptados) => [{id: response.data.id, nombre:response.data.nombre, img:response.data.url_foto,  descripcion: response.data.descripcion, expandir: false}, ...aceptados])
+        }  
+        if(response.preferencia == 'rechazado'){
+          setRechazado((rechazados) => [{id: response.data.id, nombre:response.data.nombre, img:response.data.url_foto, descripcion: response.data.descripcion, expandir: false}, ...rechazados])
+        } 
+
+      });
+    };
+  };
+
   const clickAceptarPerro = () => {
     setCargando(true);
+
     setAceptado((aceptado) => [perro, ...aceptado ]);
+
     if(dataPerro){     
       refetch().then( () => {     
-        setPerro({ nombre: StringAleatorio(6), img: dataPerro.data.message, descripcion: lorem.generateSentences(4), expandir: false });
+        //setPerro({ nombre: StringAleatorio(6), img: dataPerro.data.message, descripcion: lorem.generateSentences(4), expandir: false });
+        
+        const data = {
+          'perro_id': 1,
+          'perro_candidato_id': perro.id,
+          'preferencia': "aceptado"
+        }
+    
+        const headers = {
+          'Content-Type': 'application/json',
+        }
+    
+        axios.post("http://127.0.0.1:8000/api/interacciones", data, {
+                headers: headers
+        })
+    
         setCargando(false);
       })  
       }
@@ -100,6 +150,21 @@ function App() {
       refetch().then( () => {  
         setPerro({ nombre: StringAleatorio(6), img: dataPerro.data.message, descripcion: lorem.generateSentences(4), expandir: false });
         setCargando(false);
+
+        const data = {
+          'perro_id': 1,
+          'perro_candidato_id': perro.id,
+          'preferencia': "rechazado"
+        }
+    
+        const headers = {
+          'Content-Type': 'application/json',
+        }
+    
+        axios.post("http://127.0.0.1:8000/api/interacciones", data, {
+                headers: headers
+        })
+
       })     
       }
   };
@@ -107,11 +172,40 @@ function App() {
   const clickRechazarPerro2 = (perro) => {
     setAceptado(aceptado?.filter((miPerro) => miPerro.nombre !== perro.nombre));
     setRechazado((aceptado) => [ perro, ...aceptado]);
+
+    const data = {
+      'perro_id': 1,
+      'perro_candidato_id': perro.id,
+      'preferencia': "rechazado"
+    }
+
+    const headers = {
+      'Content-Type': 'application/json',
+    }
+
+    axios.patch(`http://127.0.0.1:8000/api/interacciones/${perro.id}`, data, {
+            headers: headers
+    })
+
   };
 
   const clickAceptarPerro2 = (perro) => {
     setRechazado(rechazado?.filter((miPerro) => miPerro.nombre !== perro.nombre));
     setAceptado((rechazado) => [perro, ...rechazado ]);
+
+    const data = {
+      'perro_id': 1,
+      'perro_candidato_id': perro.id,
+      'preferencia': "aceptado"
+    }
+
+    const headers = {
+      'Content-Type': 'application/json',
+    }
+
+    axios.patch(`http://127.0.0.1:8000/api/interacciones/${perro.id}`, data, {
+            headers: headers
+    })
   };
 
 
